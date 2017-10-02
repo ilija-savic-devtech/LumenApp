@@ -17,7 +17,7 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'student', 'middleware' => 'auth'], function ($router){
 
-    // http://localhost/student
-    $router->get('/', 'StudentController@index');
+    //http://localhost/student
+    $router->post('/', 'StudentController@create');
 });
 

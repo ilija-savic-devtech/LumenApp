@@ -10,15 +10,19 @@ namespace App\Http\Controllers;
 
 
 use App\Student;
+
+use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller;
 
 class StudentController extends Controller
 {
     /**
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(){
-        $student = Student::all();
+    public function create(Request $request)
+    {
+        $student = Student::create($request->all());
 
         return response()->json($student);
     }
