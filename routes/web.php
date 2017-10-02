@@ -20,4 +20,3 @@ $router->group(['prefix' => 'student', 'middleware' => 'auth'], function ($route
     //http://localhost/student
     $router->post('/', 'StudentController@create');
 });
-
