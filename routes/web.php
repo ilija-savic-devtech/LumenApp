@@ -14,3 +14,10 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->group(['prefix' => 'student'], function ($router){
+
+    // http://localhost/student
+    $router->get('/', 'StudentController@index');
+});
+
