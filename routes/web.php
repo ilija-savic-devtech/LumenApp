@@ -11,6 +11,12 @@
 |
 */
 
-$router->get('/', ['middleware' => 'auth', function () {
-    return 'Lumen App';
-}]);
+$router->get('/', function () use ($router) {
+    return $router->app->version();
+});
+
+$router->group(['prefix' => 'student', 'middleware' => 'auth'], function ($router){
+
+    //http://localhost/student
+    $router->post('/', 'StudentController@create');
+});

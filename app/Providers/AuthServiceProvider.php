@@ -37,7 +37,7 @@ class AuthServiceProvider extends ServiceProvider
                 return new Student();
             }
             return null;
-            /*if ($request->input('api_token')) {
+            /* if ($request->input('api_token')) {
                 return User::where('api_token', $request->input('api_token'))->first();
             }*/
         });
