@@ -17,3 +17,12 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $faker->email,
     ];
 });
+
+$factory->define(App\Student::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'surname' => $faker->lastName,
+        'indexno' => $faker->biasedNumberBetween(100000, 1000000),
+        'address' => $faker->address
+    ];
+});
