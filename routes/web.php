@@ -15,7 +15,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->group(['prefix' => 'student'], function ($router){
+$router->group(['prefix' => 'student', 'middleware' => 'auth'], function ($router){
 
     // http://localhost/student
     $router->get('/', 'StudentController@index');
