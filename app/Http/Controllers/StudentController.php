@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\Student;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller;
 
@@ -20,7 +21,7 @@ class StudentController extends Controller
     public function index(){
         $student = Student::all();
 
-        return response()->json($student);
+        return response()->json(JsonResponse::response(true, 'Get all resources successful', $student));
     }
 
     /**
@@ -28,9 +29,13 @@ class StudentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function find($id){
-        $student = Student::findOrFail($id);
+        try {
+            $student = Student::findOrFail($id);
 
-        return response()->json($student);
+            return response()->json(JsonResponse::response(true, "Get resource by id: $id successful", $student));
+        } catch(ModelNotFoundException $e){
+            return response()->json(JsonResponse::response(false, "Id doesn't exist"));
+        }
     }
     /**
      * @param Request $request
@@ -46,7 +51,7 @@ class StudentController extends Controller
 
         $student = Student::create($request->all());
 
-        return response()->json($student);
+        return response()->json(JsonResponse::response(true, 'Creation of resource successful', $student));
     }
 
     /**
@@ -61,23 +66,30 @@ class StudentController extends Controller
             'surname' => 'required',
             'indexno' => 'unique:student,indexno'
         ]);
+        try {
+            $student = Student::findOrFail($id);
 
-        $student = Student::findOrFail($id);
+            $student->update($request->all());
 
-        $updated = $student->update($request->all());
-
-        return response()->json(['Updated: ' => $updated]);
+            return response()->json(JsonResponse::response(true, "Updated resource with id: $id"));
+        } catch(ModelNotFoundException $e){
+            return response()->json(JsonResponse::response(false, "Id doesn't exist"));
+        }
     }
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|string
      */
     public function delete($id){
-        $count = Student::findOrFail($id);
-        $count->destroy($id);
+        try {
+            $count = Student::findOrFail($id);
+            $count->destroy($id);
 
-        return response()->json(['Deleted: ' => $count]);
+            return response()->json(JsonResponse::response(true, "Deleted resource with id: $id"));
+        } catch (ModelNotFoundException $e){
+            return response()->json(JsonResponse::response(false, "Id doesn't exist"));
+        }
     }
 
 
