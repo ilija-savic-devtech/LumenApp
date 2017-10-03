@@ -9,8 +9,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Exceptions\InvalidIdException;
 use App\Student;
-
+use App\Exceptions\Inva;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller;
 
@@ -28,9 +29,13 @@ class StudentController extends Controller
     /**
      * @param $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws InvalidIdException
      */
     public function find($id){
         $student = Student::find($id);
+        if ($student == null){
+            throw new InvalidIdException();
+        }
 
         return response()->json($student);
     }
@@ -49,9 +54,13 @@ class StudentController extends Controller
      * @param Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws InvalidIdException
      */
     public function update(Request $request, $id){
         $student = Student::find($id);
+        if ($student == null){
+            throw new InvalidIdException;
+        }
         $updated = $student->update($request->all());
 
         return response()->json(['Updated: ' => $updated]);
@@ -60,9 +69,13 @@ class StudentController extends Controller
     /**
      * @param $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws
      */
     public function delete($id){
         $count = Student::destroy($id);
+        if($count == 0){
+            throw new InvalidIdException;
+        }
 
         return response()->json(['Deleted: ' => $count]);
     }
