@@ -19,7 +19,7 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         AuthorizationException::class,
         HttpException::class,
-        ModelNotFoundException::class,
+        //ModelNotFoundException::class,
         ValidationException::class,
     ];
 
@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof InvalidIdException){
+        if ($e instanceof ModelNotFoundException){
             return response('Invalid Id!!!');
         }
         return parent::render($request, $e);

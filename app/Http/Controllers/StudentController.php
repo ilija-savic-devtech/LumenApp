@@ -8,10 +8,7 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Exceptions\InvalidIdException;
 use App\Student;
-use App\Exceptions\Inva;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller;
 
@@ -29,13 +26,9 @@ class StudentController extends Controller
     /**
      * @param $id
      * @return \Illuminate\Http\JsonResponse
-     * @throws InvalidIdException
      */
     public function find($id){
-        $student = Student::find($id);
-        if ($student == null){
-            throw new InvalidIdException();
-        }
+        $student = Student::findOrFail($id);
 
         return response()->json($student);
     }
@@ -45,6 +38,12 @@ class StudentController extends Controller
      */
     public function create(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'surname' => 'required',
+            'indexno' => 'unique:student,indexno'
+        ]);
+
         $student = Student::create($request->all());
 
         return response()->json($student);
@@ -54,13 +53,17 @@ class StudentController extends Controller
      * @param Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
-     * @throws InvalidIdException
      */
     public function update(Request $request, $id){
-        $student = Student::find($id);
-        if ($student == null){
-            throw new InvalidIdException;
-        }
+
+        $this->validate($request, [
+           'name' => 'required',
+            'surname' => 'required',
+            'indexno' => 'unique:student,indexno'
+        ]);
+
+        $student = Student::findOrFail($id);
+
         $updated = $student->update($request->all());
 
         return response()->json(['Updated: ' => $updated]);
@@ -69,13 +72,10 @@ class StudentController extends Controller
     /**
      * @param $id
      * @return \Illuminate\Http\JsonResponse
-     * @throws
      */
     public function delete($id){
-        $count = Student::destroy($id);
-        if($count == 0){
-            throw new InvalidIdException;
-        }
+        $count = Student::findOrFail($id);
+        $count->destroy($id);
 
         return response()->json(['Deleted: ' => $count]);
     }
