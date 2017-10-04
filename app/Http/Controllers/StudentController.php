@@ -16,6 +16,11 @@ use Laravel\Lumen\Routing\Controller;
 
 class StudentController extends Controller
 {
+    protected function buildFailedValidationResponse(Request $request, array $errors)
+    {
+        return JsonResponse::response(false, "Failed validation", $errors);
+    }
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
