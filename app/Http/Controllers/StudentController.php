@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use App\Student;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Controller;
 
 class StudentController extends Controller
@@ -19,8 +20,9 @@ class StudentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(){
+        Log::info("Inside get all resources method");
         $student = Student::all();
-
+        Log::info("Successfully finished get all resources method");
         return response()->json(JsonResponse::response(true, 'Get all resources successful', $student));
     }
 
@@ -29,12 +31,14 @@ class StudentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function find($id){
+        Log::info("Inside get one resource method");
         try {
             $student = Student::findOrFail($id);
-
+            Log::info("Successfully finished get one resource method by ID: $id");
             return response()->json(JsonResponse::response(true, "Get resource by id: $id successful", $student));
         } catch(ModelNotFoundException $e){
-            return response()->json(JsonResponse::response(false, "Id doesn't exist"));
+            Log::warning("Invalid ID: $id in get one resource method");
+            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist"));
         }
     }
     /**
@@ -43,6 +47,7 @@ class StudentController extends Controller
      */
     public function create(Request $request)
     {
+        Log::info("Inside create resource method");
         $this->validate($request, [
             'name' => 'required',
             'surname' => 'required',
@@ -50,7 +55,7 @@ class StudentController extends Controller
         ]);
 
         $student = Student::create($request->all());
-
+        Log::info("Creation of resource successful");
         return response()->json(JsonResponse::response(true, 'Creation of resource successful', $student));
     }
 
@@ -59,8 +64,9 @@ class StudentController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id){
-
+    public function update(Request $request, $id)
+    {
+        Log::info("Inside update resource method");
         $this->validate($request, [
            'name' => 'required',
             'surname' => 'required',
@@ -70,10 +76,11 @@ class StudentController extends Controller
             $student = Student::findOrFail($id);
 
             $student->update($request->all());
-
-            return response()->json(JsonResponse::response(true, "Updated resource with id: $id"));
+            Log::info("Updated resource with ID: $id");
+            return response()->json(JsonResponse::response(true, "Updated resource with ID: $id"));
         } catch(ModelNotFoundException $e){
-            return response()->json(JsonResponse::response(false, "Id doesn't exist"));
+            Log::warning("Invalid ID: $id in update resource method");
+            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist"));
         }
     }
 
@@ -82,13 +89,15 @@ class StudentController extends Controller
      * @return \Illuminate\Http\JsonResponse|string
      */
     public function delete($id){
+        Log::info("Inside delete resource method");
         try {
             $count = Student::findOrFail($id);
             $count->destroy($id);
-
-            return response()->json(JsonResponse::response(true, "Deleted resource with id: $id"));
+            Log::info("Deleted resource with ID: $id");
+            return response()->json(JsonResponse::response(true, "Deleted resource with ID: $id"));
         } catch (ModelNotFoundException $e){
-            return response()->json(JsonResponse::response(false, "Id doesn't exist"));
+            Log::warning("Invalid ID: $id in delete resource method");
+            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist"));
         }
     }
 
