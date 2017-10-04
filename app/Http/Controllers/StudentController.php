@@ -18,6 +18,7 @@ class StudentController extends Controller
 {
     protected function buildFailedValidationResponse(Request $request, array $errors)
     {
+        Log::warning("Validation failed");
         return JsonResponse::response(false, "Failed validation", $errors);
     }
 
@@ -43,7 +44,7 @@ class StudentController extends Controller
             return response()->json(JsonResponse::response(true, "Get resource by id: $id successful", $student));
         } catch(ModelNotFoundException $e){
             Log::warning("Invalid ID: $id in get one resource method");
-            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist"));
+            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist", $e->getMessage()));
         }
     }
     /**
@@ -82,10 +83,10 @@ class StudentController extends Controller
 
             $student->update($request->all());
             Log::info("Updated resource with ID: $id");
-            return response()->json(JsonResponse::response(true, "Updated resource with ID: $id"));
+            return response()->json(JsonResponse::response(true, "Updated resource with ID: $id", $student));
         } catch(ModelNotFoundException $e){
             Log::warning("Invalid ID: $id in update resource method");
-            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist"));
+            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist", $e->getMessage()));
         }
     }
 
@@ -99,10 +100,10 @@ class StudentController extends Controller
             $count = Student::findOrFail($id);
             $count->destroy($id);
             Log::info("Deleted resource with ID: $id");
-            return response()->json(JsonResponse::response(true, "Deleted resource with ID: $id"));
+            return response()->json(JsonResponse::response(true, "Deleted resource with ID: $id", $count));
         } catch (ModelNotFoundException $e){
             Log::warning("Invalid ID: $id in delete resource method");
-            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist"));
+            return response()->json(JsonResponse::response(false, "ID: $id doesn't exist", $e->getMessage()));
         }
     }
 
